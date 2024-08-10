@@ -5,8 +5,8 @@ import { FaStar } from "react-icons/fa";
 
 const Hero = () => {
   return (
-    <section  className="relative bg-hero bg-center bg-no-repeat h-screen w-full">
-      <div className="max_padd_container relative top-30 xs:top-32">
+    <section  className="relative bg-hero bg-cover bg-center bg-no-repeat h-screen w-full mt-20 pb-12">
+      <div className="max_padd_container relative top-30 xs:top-12">
         <h1 className="h1 capitalize m-0 max-w-[37rem]">Digital Shopping Hub Junction</h1>
         <p className="text-grey-50 regular-16 mt-6 max-w-[33rem]">
           Lorem ipsum dolor sit amet, consectetur adipisicing elit. Similique
