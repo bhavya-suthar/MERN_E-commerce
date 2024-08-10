@@ -13,7 +13,7 @@ const Header = () => {
   const toggleMenu = () => setMenuOpened(!menuOpened);
 
   return (
-    <header className="fixed top-0 left-0 m-auto max_padd_container w-full bg-transparent ring-1 ring-slate-900/5 z-10 ">
+    <header className="fixed top-0 left-0 m-auto max_padd_container w-full bg-white ring-1 ring-slate-900/5 z-10 ">
       <div className="px-4 flexBetween py-3 max-xs:px-2">
         <div>
           <Link>
@@ -48,12 +48,21 @@ const Header = () => {
             />
           )}
           <div className="flexBetween cursor-pointer sm:gap-x-6">
-            <NavLink to={"cart-page"} className={"flex"}><FaOpencart className="p-1 h-8 w-8 ring-slate-900/30 ring-1 rounded-full"/>
-            <span className="relative flexCenter w-5 h-5 rounded-full bg-secondary text-white medium-14 -top-2">0</span></NavLink>
+            <NavLink to={"cart-page"} className={"flex"}>
+              <FaOpencart className="p-1 h-8 w-8 ring-slate-900/30 ring-1 rounded-full" />
+              <span className="relative flexCenter w-5 h-5 rounded-full bg-secondary text-white medium-14 -top-2">
+                0
+              </span>
+            </NavLink>
             {/* <NavLink to={'logout'} className={"btn_secondary_rounded flexCenter gap-x-2 medium-16"}><img src={logout} alt="logoutIcon" height={19} width={19}/>Logout</NavLink> */}
-            <NavLink to={'login'} className={"btn_secondary_rounded flexCenter gap-x-2 medium-16"}><img src={user} alt="logoutIcon" height={19} width={19}/>Login</NavLink>
-
-          </div>
+            <NavLink
+              to={"login"}
+              className={"btn_secondary_rounded flexCenter gap-x-2 medium-16"}
+            >
+              <img src={user} alt="logoutIcon" height={19} width={19} />
+              Login
+            </NavLink>
+          </div>{" "}
         </div>
       </div>
     </header>
