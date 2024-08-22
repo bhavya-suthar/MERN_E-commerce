@@ -1,7 +1,7 @@
 import React from "react";
 import { FaSearch } from "react-icons/fa";
 import { Link } from "react-router-dom";
-// scale-0 group-hover:scale-100
+
 
 const Item = ({ id, name, image, old_price, new_price }) => {
   return (
@@ -9,9 +9,9 @@ const Item = ({ id, name, image, old_price, new_price }) => {
       <div className="relative flexcenter group overflow-hidden transition-all duration-100">
         <Link
           to={`product/${id}`}
-          className="h-12 w-12 ml-20 bg-white rounded-full flexCenter absolute top-1/2 bottom-1/2 
-          !py-2 z-20  transition-all duration-700">
-          <FaSearch className="hover:rotate-90 scale-125 transition-all duration-200"/></Link>
+          className="h-12 w-12 ml-32 bg-white rounded-full flexCenter absolute top-1/2 bottom-1/2 
+          !py-2 z-20 scale-0 group-hover:scale-100 transition-all duration-700">
+          <FaSearch className="hover:rotate-90 hover:scale-125 transition-all duration-200"/></Link>
         <img src={image} alt="productImage" className="w-full block object-cover group-hover:scale-110 transition-all duration-1000"/>
       </div>
       <div className="p-4 overflow-hidden">
