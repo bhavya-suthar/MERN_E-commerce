@@ -9,9 +9,10 @@ const Login = () => {
       <input type="text" placeholder="Email Address" className="h-14 w-full pl-5 bg-slate-900/5 outline-none rounded-xl" />
       <input type="text" placeholder="Password" className="h-14 w-full pl-5 bg-slate-900/5 outline-none rounded-xl" />
     </div>
-    <button>Countinue</button>
-    <p>Already have an account? <span>Login</span></p>
-    <div>
+    <button className="btn_dark_rounded my-5 w-full !rounded-md">Countinue</button>
+    <p className="text-black font-bold">Already have an account? 
+    <span className="text-secondary underline cursor-pointer">Login</span></p>
+    <div className="flexCenter mt-6 gap-3"> 
       <input type="checkbox" name="" id="" />
       <p>By continuing, i agree to the terms of use & privacy policy</p>
     </div>
