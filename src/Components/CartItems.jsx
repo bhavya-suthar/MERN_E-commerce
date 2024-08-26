@@ -3,7 +3,7 @@ import { ShopContext } from "../Context/ShopContext";
 import { TbTrash } from "react-icons/tb";
 
 const CartItems = () => {
-  const { all_products, cartItems, removeFromCart } = useContext(ShopContext);
+  const { all_products, cartItems, removeFromCart ,getTotalAmount} = useContext(ShopContext);
   return (
     <section className="max_padd_container pt-28">
       <table className="w-full mx-auto">
@@ -61,7 +61,7 @@ const CartItems = () => {
             <div>
                 <div className="flexBetween py-4">
                     <h4 className="medium-16">Subtotal:</h4>
-                    <h4 className="text-gray-30 font-semibold">₹{0}</h4>
+                    <h4 className="text-gray-30 font-semibold">₹{getTotalAmount()}</h4>
                 </div>
                 <hr />
                 <div className="flexBetween py-4">
@@ -71,7 +71,7 @@ const CartItems = () => {
                 <hr />
                 <div className="flexBetween py-4">
                     <h4 className="bold-18">Total:</h4>
-                    <h4 className="bold-18">₹{0}</h4>
+                    <h4 className="bold-18">₹{getTotalAmount()}</h4>
                 </div>
             </div>
             <button className="btn_dark_rounded w-14">Checkout</button>
