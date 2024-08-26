@@ -10,6 +10,7 @@ import Footer from './Components/Footer'
 import bannermens from "./assets/bannermens.png";
 import bannerwomens from "./assets/bannerwomens.png";
 import bannerkids from "./assets/bannerkids.png";
+import CartItems from "./Components/CartItems"
 
 export default function App() {
   return (
@@ -25,7 +26,7 @@ export default function App() {
       <Route path="/product" element={<Product/>}>
         <Route path=":productId" element={<Product/>}/>
       </Route>
-      <Route path="/cart-page" element={<Cart/>}/>
+      <Route path="/cart-page" element={<CartItems/>}/>
       <Route path="/login" element={<Login/>}/>
     </Routes>
     <Footer/>
