@@ -5,6 +5,7 @@ import product_rt_3 from "../assets/product_rt_3.png";
 import product_rt_4 from "../assets/product_rt_4.png";
 import { useContext } from "react";
 import { ShopContext } from "../Context/ShopContext";
+
 const ProductDisplay = (props) => {
   const { product } = props;
   const { addToCart } = useContext(ShopContext);
@@ -54,7 +55,12 @@ const ProductDisplay = (props) => {
               </div>
             </div>
             <div className="flex flex-col gap-y-3 mb-4 max-w-[555px]">
-              <button onClick={()=>{addToCart(product.id)}} className="btn_dark_outline !rounded-none uppercase regular-14 tracking-widest">
+              <button
+                onClick={() => {
+                  addToCart(product.id);
+                }}
+                className="btn_dark_outline !rounded-none uppercase regular-14 tracking-widest"
+              >
                 Add to Cart
               </button>
               <button className="btn_dark_rounded !rounded-none uppercase regular-14 tracking-widest">

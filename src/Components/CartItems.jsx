@@ -4,6 +4,8 @@ import { TbTrash } from "react-icons/tb";
 
 const CartItems = () => {
   const { all_products, cartItems, removeFromCart ,getTotalAmount} = useContext(ShopContext);
+
+  
   return (
     <section className="max_padd_container pt-28">
       <table className="w-full mx-auto">

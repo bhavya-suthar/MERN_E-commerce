@@ -4,8 +4,8 @@ import Home from "./Pages/Home"
 import Category from './Pages/Category'
 import Cart from './Pages/Cart'
 import Login from './Pages/Login'
-import Product from './Pages/Product'
 import Footer from './Components/Footer'
+import Product from './Pages/Product'
 // import images
 import bannermens from "./assets/bannermens.png";
 import bannerwomens from "./assets/bannerwomens.png";
@@ -16,7 +16,6 @@ export default function App() {
   return (
     <main className="bg-primary text-tertiary">
     <BrowserRouter>
-
     <Header/>
     <Routes>
       <Route path="/" element={<Home/>}/>

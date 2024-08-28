@@ -1,15 +1,16 @@
 import { useContext } from "react"
-import {ShopContext} from '../Context/ShopContext'
 import { useParams } from "react-router-dom"
 import ProductHd from "../Components/ProductHd"
 import ProductDisplay from "../Components/ProductDisplay"
 import ProductDescription from "../Components/ProductDescription"
 import RelatedProducts from "../Components/RelatedProducts"
+import { ShopContext } from "../Context/ShopContext"
 
 const Product = () => {
+  
   const {all_products} = useContext(ShopContext)
   console.log("🚀 ~ Product ~ all_products:", all_products)
-  
+
   const {productId} = useParams();
   console.log("🚀 ~ Product ~ productId:", productId)
 
