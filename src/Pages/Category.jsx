@@ -3,6 +3,7 @@ import all_products from "../assets/all_products";
 import Item from "../Components/Item";
 
 const Category = ({ category, banner }) => {
+  console.log("🚀 ~ Category ~ category:", category)
   return (
     <section className="max_padd_container py-12 xl:py-28">
       <div>
@@ -20,10 +21,12 @@ const Category = ({ category, banner }) => {
         {/* container */}
         <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
           {all_products.map((item) => {
+            console.log("🚀 ~ {all_products.map ~ item:", item)
             if (category === item.category) {
               return (
                 <Item
                   key={item.id}
+                  id={item.id}
                   image={item.image}
                   name={item.name}
                   new_price={item.new_price}

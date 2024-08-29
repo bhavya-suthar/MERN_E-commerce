@@ -1,6 +1,7 @@
 import React from "react";
 import POPULAR from "../assets/popular";
 import Item from "../Components/Item";
+import all_products from "../assets/all_products";
 
 const Popular = () => {
   return (
@@ -10,8 +11,9 @@ const Popular = () => {
         <hr className="h-[3px] md:w-1/2 mx-auto bg-gradient-to-l from-transparent via-black to-transparent mb-16"/>
         {/* container */}
         <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
-          {POPULAR.map((item) => (
-            <Item 
+          {all_products.map((item) => {
+            console.log("🚀 ~ {POPULAR.map ~ item:", item)
+            return <Item 
               key={item.id}
               id={item.id}
               image={item.image}
@@ -19,7 +21,7 @@ const Popular = () => {
               new_price={item.new_price}
               old_price={item.old_price}
             />
-          ))}
+          })}
         </div>
       </div>
     </section>
