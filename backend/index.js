@@ -6,6 +6,8 @@ const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const path = require("path");
 const cors = require("cors");
+const { type } = require("os");
+const { error } = require("console");
 
 app.use(express.json());
 app.use(cors());
@@ -86,8 +88,8 @@ app.post("/addproduct", async (req, res) => {
     let last_product_array = products.slice(-1);
     let last_product = last_product_array[0];
     id = last_product.id + 1;
-  }else{
-    id=1
+  } else {
+    id = 1;
   }
   const product = new Product({
     // id: req.body.id,
@@ -108,21 +110,75 @@ app.post("/addproduct", async (req, res) => {
 });
 
 //creating API for remove product
-app.post('/removeproduct',async(req,res)=>{
-  await Product.findOneAndDelete({id:req.body.id});
-  console.log('removed')
+app.post("/removeproduct", async (req, res) => {
+  await Product.findOneAndDelete({ id: req.body.id });
+  console.log("removed");
   res.json({
-    success:true,
-    name:req.body.name,
-  })
-})
+    success: true,
+    name: req.body.name,
+  });
+});
 
 //creating API for get all products
-app.get('/allproducts',async(req,res)=>{
+app.get("/allproducts", async (req, res) => {
   let products = await Product.find({});
   console.log("All Products Fetched");
-  res.send(products)
-})
+  res.send(products);
+});
+
+//Schema user model
+const User = mongoose.model("User", {
+  name: {
+    type: String,
+  },
+  email: {
+    type: String,
+    unique: true,
+  },
+  password: {
+    type: String,
+  },
+  carData: {
+    type: String,
+  },
+  date: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
+app.post("/signup", async (req, res) => {
+  let check = await User.findOne({ email: req.body.email });
+  if (check) {
+    return res
+      .status(400)
+      .json({
+        success: false,
+        errors: "Existing user found with same email address",
+      });
+  }
+  let cart = {};
+  for (let i = 0; i < 300; i++) {
+    cart[i] = 0;
+  }
+  const user = new User({
+    name: req.body.username,
+    email: req.body.email,
+    password: req.body.password,
+    cartData: cart,
+  });
+  await user.save();
+
+  const data = {
+    user: {
+      id: user.id,
+    },
+  };
+  const token = jwt.sign(data, "secret_ecom");
+  res.json({ success: true, token });
+});
+
+//creating endpoint for user login
 
 app.listen(port, (error) => {
   if (!error) {
