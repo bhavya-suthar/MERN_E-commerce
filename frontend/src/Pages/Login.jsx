@@ -2,13 +2,55 @@ import { useState } from "react";
 
 const Login = () => {
   const [state, setState] = useState("Login");
+  const [formData,setFormData] = useState({
+    username:"",
+    email:"",
+    password:""
+  })
+
+  const changeHandler = (e)=>{
+    setFormData({...formData,[e.target.name]:e.target.value})
+    
+  }
 
   const login = async ()=>{
-    console.log(" inside login function")
+    console.log(" inside login function",formData)
+    let responseData;
+    await fetch('http://localhost:4000/login',{
+      method:"POST",
+      headers:{
+        Accept:'application/formData',
+        'Content-Type':'application/json'
+      },
+      body:JSON.stringify(formData)
+    }).then((response)=>response.json()).then((data)=>responseData = data)
+
+    if(responseData.success){
+      localStorage.setItem('auth-token',responseData.token);
+      window.location.replace('/')
+    }else{
+      alert(responseData.errors)
+    }
   }
 
   const signup = async () =>{
-    console.log("inside sign up function")
+    console.log("inside sign up function",formData);
+    let responseData;
+    await fetch('http://localhost:4000/signup',{
+      method:"POST",
+      headers:{
+        Accept:'application/formData',
+        'Content-Type':'application/json'
+      },
+      body:JSON.stringify(formData)
+    }).then((response)=>response.json()).then((data)=>responseData = data)
+
+    if(responseData.success){
+      localStorage.setItem('auth-token',responseData.token);
+      window.location.replace('/')
+    }else{
+      alert(responseData.errors)
+    }
   }
 
   return (
@@ -20,6 +62,8 @@ const Login = () => {
             <input
               type="text"
               name="username"
+              value={formData.username}
+              onChange={changeHandler}
               placeholder="Your Name"
               className="h-14 w-full pl-5 bg-slate-900/5 outline-none rounded-xl"
             />
@@ -28,11 +72,17 @@ const Login = () => {
           )}
           <input
             type="text"
+            name="email"
+            value={formData.email}
+            onChange={changeHandler}
             placeholder="Email Address"
             className="h-14 w-full pl-5 bg-slate-900/5 outline-none rounded-xl"
           />
           <input
             type="text"
+            name="password"
+            value={formData.password}
+            onChange={changeHandler}
             placeholder="Password"
             className="h-14 w-full pl-5 bg-slate-900/5 outline-none rounded-xl"
           />

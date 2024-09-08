@@ -55,14 +55,14 @@ const Header = () => {
                 {getTotalCartItems()}
               </span>
             </NavLink>
-            {/* <NavLink to={'logout'} className={"btn_secondary_rounded flexCenter gap-x-2 medium-16"}><img src={logout} alt="logoutIcon" height={19} width={19}/>Logout</NavLink> */}
+            {localStorage.getItem('auth-token') ?  <NavLink onClick={()=>{localStorage.removeItem('auth-token');window.location.replace("/")}} to={'logout'} className={"btn_secondary_rounded flexCenter gap-x-2 medium-16"}><img src={logout} alt="logoutIcon" height={19} width={19}/>Logout</NavLink>:
             <NavLink
               to={"login"}
               className={"btn_secondary_rounded flexCenter gap-x-2 medium-16"}
             >
               <img src={user} alt="logoutIcon" height={19} width={19} />
               Login
-            </NavLink>
+            </NavLink>} 
           </div>{" "}
         </div>
       </div>
