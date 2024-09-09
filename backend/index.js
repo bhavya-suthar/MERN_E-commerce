@@ -138,8 +138,8 @@ const User = mongoose.model("User", {
   password: {
     type: String,
   },
-  carData: {
-    type: String,
+  cartData: {
+    type: Object,
   },
   date: {
     type: Date,
@@ -206,6 +206,35 @@ app.get('/newcollections',async(req,res)=>{
   console.log(" NewCollection Fetched",)
   res.send(newcollection)
 })
+
+//creating endpoint for popular products
+app.get('/popularproducts',async(req,res)=>{
+  let products = await Product.find({category:'men'})
+  let popularproducts = products.slice(0,4);
+  console.log("popular products fetched");
+  res.send(popularproducts)
+})
+
+//creating endpoint for adding products in cartData
+app.post('/addtocart',async (req,res)=>{
+  console.log(req.body)
+})
+
+//creating middlewear to fetch user
+const fetchUser = async(req,res,next)=>{
+  const token = req.header('auth-token')
+  if(!token){
+    res.status(401).send({errors:"please authenticate using valid login"})
+  }else{
+    try{
+      const data = jwt.verify(token,'secret-ecom');
+      req.user = data.user;
+      next();
+    }catch(error){
+      res.status(401).send({errors:'please authenticate using a valid token'})
+    }
+  }
+}
 
 app.listen(port, (error) => {
   if (!error) {
