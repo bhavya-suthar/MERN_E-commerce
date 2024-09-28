@@ -8,14 +8,14 @@ export default {
     extend: {
       colors: {
         primary: '#f0f2f5',
-        secondary: '#ff813f',
+        secondary: '#103ea8',
         tertiary: '#222222',
         slate: {
           10: '#f1f3f4',
         },
         green: {
-          50: '#30AF5B',
-          90: '#292C27',
+          50: '#103ea8',
+          90: '#103ea8',
         },
         gray: {
           10: '#EEEEEE',
@@ -26,7 +26,8 @@ export default {
         },
       },
      backgroundImage: {
-        hero: "url('/src/assets/bgecom.png')",
+        hero: "url('/src/assets/heroimg.jpeg')",
+        hero2:"url('src/assets/bgecom.png')",
         banneroffer: "url('/src/assets/banneroffer.png')",
       },
       screens: {

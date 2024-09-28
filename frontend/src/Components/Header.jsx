@@ -4,7 +4,7 @@ import { useContext, useState } from "react";
 import { MdClose, MdMenu } from "react-icons/md";
 import { FaOpencart } from "react-icons/fa";
 //import images
-import logo from "../assets/logo.svg";
+import output from "../assets/output.png";
 import logout from "../assets/logout.svg";
 import user from "../assets/user.svg";
 import { ShopContext } from "../Context/ShopContext";
@@ -18,7 +18,7 @@ const Header = () => {
       <div className="px-4 flexBetween py-3 max-xs:px-2">
         <div>
           <Link>
-            <img src={logo} alt="" height={66} width={88} />
+            <img src={output} alt="" height={66} width={88} />
           </Link>
         </div>
         {/* Navbar Desktop*/}
@@ -51,7 +51,7 @@ const Header = () => {
           <div className="flexBetween cursor-pointer sm:gap-x-6">
             <NavLink to={"cart-page"} className={"flex"}>
               <FaOpencart className="p-1 h-8 w-8 ring-slate-900/30 ring-1 rounded-full" />
-              <span className="relative flexCenter w-5 h-5 rounded-full bg-secondary text-white medium-14 -top-2">
+              <span className="relative flexCenter w-5 h-5 rounded-full bg-[#103ea8] text-white medium-14 -top-2">
                 {getTotalCartItems()}
               </span>
             </NavLink>

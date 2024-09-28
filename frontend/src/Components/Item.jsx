@@ -18,7 +18,7 @@ const Item = ({ id, name, image, old_price, new_price }) => {
         <h4 className="my-[6px] medium-16 line-clamp-2 text-gray-30">{name}</h4>
         <div className="flex gap-5">
           <div className="bold-16">{new_price}.00</div>
-          <div className="text-secondary bold-16 line-through">{old_price}.00</div>
+          <div className="text-[#103ea8] bold-16 line-through">{old_price}.00</div>
         </div>
       </div>
     </div>

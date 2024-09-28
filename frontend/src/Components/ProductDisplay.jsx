@@ -27,7 +27,7 @@ const ProductDisplay = (props) => {
         {/* right side */}
         <div className="flex-col flex xl:flex-[1.7]">
           <h3 className="h3">{product.name}</h3>
-          <div className="flex gap-x-2 text-secondary medium-22">
+          <div className="flex gap-x-2 text-[#f7c23d] medium-22">
             <MdStar />
             <MdStar />
             <MdStar />
