@@ -1,9 +1,9 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { ShopContext } from "../Context/ShopContext";
 import { TbTrash } from "react-icons/tb";
 
 const CartItems = () => {
-  const { all_products, cartItems, removeFromCart ,getTotalAmount} = useContext(ShopContext);
+  const { all_products, cartItems, removeFromCart,addToCart ,getTotalAmount} = useContext(ShopContext);
 
   
   return (
@@ -40,7 +40,28 @@ const CartItems = () => {
                     <div className="line-clamp-3">{e.name}</div>
                   </td>
                   <td>₹{e.new_price}</td>
-                  <td className="w-16 h-16 bg-white">{cartItems[e.id]}</td>
+                  {/* <td className="w-16 h-16 bg-white">{cartItems[e.id]}</td> */}
+                  <td>
+                    {/* Decrease quantity button */}
+                    <div  className="flex items-center justify-center align-middle gap-2">
+
+                    <button
+                      className="px-2 py-1 bg-black text-white rounded"
+                      onClick={() => removeFromCart(e.id,false)}
+                    >
+                      -
+                    </button>
+                    <div>{cartItems[e.id]}</div>
+                    {/* Increase quantity button */}
+                    <button
+                      className="px-2 py-1 bg-black text-white rounded"
+                      onClick={() => addToCart(e.id)}
+                    >
+                      +
+                    </button>
+                    </div>
+                  </td>
+
                   <td>
                     ₹{e.new_price * cartItems[e.id]}
                   </td>
