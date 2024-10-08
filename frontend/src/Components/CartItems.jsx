@@ -3,7 +3,7 @@ import { ShopContext } from "../Context/ShopContext";
 import { TbTrash } from "react-icons/tb";
 
 const CartItems = () => {
-  const { all_products, cartItems, removeFromCart,addToCart ,getTotalAmount} = useContext(ShopContext);
+  const { all_products, cartItems, removeFromCart,addToCart ,getTotalAmount,deleteFromCart} = useContext(ShopContext);
 
   
   return (
@@ -67,7 +67,7 @@ const CartItems = () => {
                   </td>
                   <td>
                     <div className="bold-22 pl-14">
-                      <TbTrash onClick={() => removeFromCart(e.id)} />
+                      <TbTrash onClick={() => deleteFromCart(e.id)} />
                     </div>
                   </td>
                 </tr>

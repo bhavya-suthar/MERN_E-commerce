@@ -78,6 +78,29 @@ const ShopContextProvider = (props) => {
     }
   };
 
+  const deleteFromCart = (itemId) => {
+    setCartItems((prev) => {
+      let updatedCart = { ...prev };
+      updatedCart[itemId] = 0; // Set the item's quantity to 0 or remove it completely
+      return updatedCart;
+    });
+  
+    if (localStorage.getItem("auth-token")) {
+      fetch("http://localhost:4000/deletecartitem", {
+        method: "POST",
+        headers: {
+          Accept: "application/form-data",
+          "auth-token": `${localStorage.getItem("auth-token")}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ itemId }),
+      })
+        .then((response) => response.json())
+        .then((data) => console.log(data));
+    }
+  };
+  
+
   const getTotalAmount = () => {
     let totalAmount = 0;
     for (const item in cartItems) {
@@ -97,7 +120,8 @@ const ShopContextProvider = (props) => {
     let totalItem = 0;
     for (const item in cartItems) {
       if (cartItems[item] > 0) {
-        totalItem += cartItems[item];
+        // totalItem += cartItems[item];
+        totalItem += 1;
       }
     }
     return totalItem;
@@ -108,6 +132,7 @@ const ShopContextProvider = (props) => {
     cartItems,
     addToCart,
     removeFromCart,
+    deleteFromCart,
     getTotalAmount,
     getTotalCartItems,
   };

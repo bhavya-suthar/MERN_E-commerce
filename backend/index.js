@@ -257,6 +257,23 @@ app.post("/removefromcart", fetchUser, async (req, res) => {
   res.send("Removed");
 });
 
+//creating endpoint to delete a product from the cart
+app.post("/deletecartitem", fetchUser, async (req, res) => {
+  console.log("Deleting Item from Cart", req.body.itemId);
+  
+  let userData = await User.findOne({ _id: req.user.id });
+  
+  // Set the product's quantity to 0 or remove it entirely
+  userData.cartData[req.body.itemId] = 0;
+
+  await User.findOneAndUpdate(
+    { _id: req.user.id },
+    { cartData: userData.cartData }
+  );
+
+  res.json({ success: true, message: "Item deleted from cart" });
+});
+
 app.post('/getcart',fetchUser,async(req,res)=>{
   console.log('get cart')
   let userData = await User.findOne({_id:req.user.id})
