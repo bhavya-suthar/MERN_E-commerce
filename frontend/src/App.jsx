@@ -10,6 +10,7 @@ import CartItems from "./Components/CartItems";
 import bannermens from "./assets/bannermens.png";
 import bannerwomens from "./assets/bannerwomens.png";
 import bannerkids from "./assets/bannerkids.png";
+import ProceedToCheckout from "./Components/ProceedToCheckout";
 
 export default function App() {
   // Simulate an authentication check (should be replaced with real token validation logic)
@@ -40,7 +41,7 @@ export default function App() {
   };
 
   return (
-    <main className="bg-primary text-tertiary">
+    <main className="bg-primarygray text-tertiary">
       <BrowserRouter>
         <Header />
         <Routes>
@@ -56,6 +57,7 @@ export default function App() {
             <Route path="/product" element={<Product />} />
             <Route path="/product/:productId" element={<Product />} />
             <Route path="/cart-page" element={<CartItems />} />
+            <Route path="/paymentform" element={<ProceedToCheckout />} />
           </Route>
         </Routes>
         <Footer />

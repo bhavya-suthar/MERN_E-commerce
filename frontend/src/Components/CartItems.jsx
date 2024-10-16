@@ -1,9 +1,10 @@
 import { useContext } from "react";
 import { ShopContext } from "../Context/ShopContext";
 import { TbTrash } from "react-icons/tb";
+import { Link } from "react-router-dom";
 
 const CartItems = () => {
-  const { all_products, cartItems, removeFromCart,addToCart ,getTotalAmount,deleteFromCart} = useContext(ShopContext);
+  const { all_products, cartItems,removeFromCart,addToCart ,getTotalAmount,deleteFromCart} = useContext(ShopContext);
 
   
   return (
@@ -97,10 +98,10 @@ const CartItems = () => {
                     <h4 className="bold-18">₹{getTotalAmount()}</h4>
                 </div>
             </div>
-            <button className="btn_dark_rounded w-40">Checkout</button>
+            <Link to={'/paymentform'} className="btn_dark_rounded w-32">Checkout</Link>
             <div className="flex flex-col gap-10">
                 <h4 className="bold-20 capitalize">Your coupon code enter here:</h4>
-                <div className="flexBetween pl-5 h-12 bg-primary rounded-full ring-1 ring-slate-900/10">
+                <div className="flexBetween pl-5 h-12 bg-primarygray rounded-full ring-1 ring-slate-900/10">
                     <input type="text" placeholder="Coupon code"  className="bg-transparent border-none outline-none"/>
                     <button className="btn_dark_rounded">Submit</button>
                 </div>

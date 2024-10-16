@@ -9,13 +9,29 @@ const cors = require("cors");
 const { type } = require("os");
 const { error } = require("console");
 
+const bodyParser = require("body-parser");
+const bcrypt = require("bcrypt");
+
+// const PORT = process.env.PORT || 5000;
+
 app.use(express.json());
 app.use(cors());
 
 //Database Connection with mongodb
-mongoose.connect(
-  "mongodb://ecommerceMern:user123@cluster0-shard-00-00.fd5d5.mongodb.net:27017,cluster0-shard-00-01.fd5d5.mongodb.net:27017,cluster0-shard-00-02.fd5d5.mongodb.net:27017/ecommerce-mern?ssl=true&replicaSet=atlas-c46g9h-shard-0&authSource=admin&retryWrites=true&w=majority&appName=Cluster0"
-);
+mongoose
+  .connect(
+    "mongodb://ecommerceMern:user123@cluster0-shard-00-00.fd5d5.mongodb.net:27017,cluster0-shard-00-01.fd5d5.mongodb.net:27017,cluster0-shard-00-02.fd5d5.mongodb.net:27017/ecommerce-mern?ssl=true&replicaSet=atlas-c46g9h-shard-0&authSource=admin&retryWrites=true&w=majority&appName=Cluster0",
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    }
+  )
+  .then(() => {
+    console.log("MongoDB connected successfully");
+  })
+  .catch((err) => {
+    console.error("MongoDB connection error:", err);
+  });
 
 //API creation
 app.get("/", (req, res) => {
@@ -246,7 +262,7 @@ app.post("/addtocart", fetchUser, async (req, res) => {
 
 //creating endpoint for removing cart product
 app.post("/removefromcart", fetchUser, async (req, res) => {
-  console.log("Removed",req.body.itemId)
+  console.log("Removed", req.body.itemId);
   let userData = await User.findOne({ _id: req.user.id });
   if (userData.cartData[req.body.itemId] > 0)
     userData.cartData[req.body.itemId] -= 1;
@@ -260,9 +276,9 @@ app.post("/removefromcart", fetchUser, async (req, res) => {
 //creating endpoint to delete a product from the cart
 app.post("/deletecartitem", fetchUser, async (req, res) => {
   console.log("Deleting Item from Cart", req.body.itemId);
-  
+
   let userData = await User.findOne({ _id: req.user.id });
-  
+
   // Set the product's quantity to 0 or remove it entirely
   userData.cartData[req.body.itemId] = 0;
 
@@ -274,11 +290,112 @@ app.post("/deletecartitem", fetchUser, async (req, res) => {
   res.json({ success: true, message: "Item deleted from cart" });
 });
 
-app.post('/getcart',fetchUser,async(req,res)=>{
-  console.log('get cart')
-  let userData = await User.findOne({_id:req.user.id})
-  res.json(userData.cartData)
-})
+app.post("/getcart", fetchUser, async (req, res) => {
+  console.log("get cart");
+  let userData = await User.findOne({ _id: req.user.id });
+  res.json(userData.cartData);
+});
+
+// Middleware
+app.use(cors());
+app.use(bodyParser.json());
+
+// MongoDB connection
+// mongoose.connect('mongodb://localhost:27017/yourdbname', {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true,
+// });
+
+// Define a schema
+const OrderSchema = new mongoose.Schema({
+  userName: { type: String, required: true },
+  fullname: { type: String, required: true, unique: true },
+  email: { type: String, required: true },
+  password: { type: Date, required: true },
+  confirmPass: { type: String, required: true },
+  gender: { type: String, required: true },
+  country: { type: String, required: true },
+  city: { type: String, required: true },
+  date: { type: String, required: true },
+  address: { type: String, required: true },
+  terms: { type: Boolean, required: true },
+  cartItems: { type: Object, required: true }, // Add cartItems to store the user's cart
+});
+
+// Create a model
+const Order = mongoose.model("order", OrderSchema);
+// In app.js or server.js
+app.use(express.json()); // Ensure body parsing middleware is applied
+
+app.post("/order", fetchUser, async (req, res) => {
+  try {
+    console.log("Order API called"); // Ensure this is logged
+    console.log("Request body:", req.body);
+
+    const {
+      userName,
+      fullname,
+      email,
+      password,
+      confirmPass,
+      date,
+      gender,
+      country,
+      city,
+      address,
+      terms,
+    } = req.body;
+
+    // Validate required fields
+    if (
+      !userName ||
+      !fullname ||
+      !email ||
+      !password ||
+      !confirmPass ||
+      !date ||
+      !gender ||
+      !country ||
+      !city ||
+      !address ||
+      terms === null ||
+      terms === undefined
+    ) {
+      console.log("Validation failed: Missing fields");
+      return res.status(400).json({ error: "All fields are required!" });
+    }
+
+    // Fetch user and process the order
+    const user = await User.findById(req.user.id);
+    if (!user || !user.cartData) {
+      return res.status(404).json({ error: "User or cart not found" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newOrder = new Order({
+      userName,
+      fullname,
+      email,
+      password: hashedPassword,
+      confirmPass: hashedPassword,
+      date,
+      gender,
+      country,
+      city,
+      address,
+      terms,
+      cartItems: user.cartData,
+    });
+    console.log("🚀 ~ app.post ~ user.cartData:", user.cartData);
+
+    await newOrder.save();
+    res.status(201).json({ message: "Order placed successfully!" });
+  } catch (error) {
+    console.error("Error while saving order:", error);
+    res.status(500).json({ error: "Error saving order data" });
+  }
+});
 
 app.listen(port, (error) => {
   if (!error) {

@@ -4,7 +4,7 @@ import POPULAR from "../assets/popular";
 
 const RelatedProducts = () => {
   return (
-    <section className="bg-primary">
+    <section className="bg-primarygray">
       <div className="max_padd_container py-12 xl:w-[88%]">
         <h3 className="h3 text-center">Related Products</h3>
         <hr className="h-[3px] md:w-1/2 mx-auto bg-gradient-to-l from-transparent via-black to-transparent mb-16" />

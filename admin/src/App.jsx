@@ -3,7 +3,7 @@ import Admin from "./Pages/Admin";
 
 export default function App() {
   return (
-    <main className="bg-primary text-tertiary">
+    <main className="bg-primarygray text-tertiary">
     <Navbar/>
     <Admin/>
     </main>

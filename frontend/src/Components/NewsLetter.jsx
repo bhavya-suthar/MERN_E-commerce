@@ -6,7 +6,7 @@ const NewsLetter = () => {
         <h4 className="uppercase bold-18">
           Subscribe to our newsletter and stay updated
         </h4>
-        <div className="flexBetween rounded-full ring-1 ring-slate-900/10 hover:ring-slate-900/15 bg-primary w-full max-w-[588px]">
+        <div className="flexBetween rounded-full ring-1 ring-slate-900/10 hover:ring-slate-900/15 bg-primarygray w-full max-w-[588px]">
           <input
             type="email"
             placeholder="Your email address"

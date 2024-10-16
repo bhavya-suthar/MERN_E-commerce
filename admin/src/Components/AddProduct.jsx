@@ -61,7 +61,7 @@ const AddProduct = () => {
           value={productDetails.name}
           onChange={changeHandler}
           placeholder="Type here.."
-          className="bg-primary outline-none max-w-80 w-full py-3 
+          className="bg-primarygray outline-none max-w-80 w-full py-3 
             px-4 rounded-md"
         />
       </div>
@@ -73,7 +73,7 @@ const AddProduct = () => {
           value={productDetails.old_price}
           onChange={changeHandler}
           placeholder="Type here.."
-          className="bg-primary outline-none max-w-80 w-full py-3
+          className="bg-primarygray outline-none max-w-80 w-full py-3
             px-4 rounded-md"
         />
       </div>
@@ -85,7 +85,7 @@ const AddProduct = () => {
           value={productDetails.new_price}
           onChange={changeHandler}
           placeholder="Type here.."
-          className="bg-primary outline-none max-w-80 w-full py-3
+          className="bg-primarygray outline-none max-w-80 w-full py-3
             px-4 rounded-md"
         />
       </div>
@@ -96,7 +96,7 @@ const AddProduct = () => {
           value={productDetails.category}
           onChange={changeHandler}
           id=""
-          className="bg-primary ring-1 ring-slate-900/20 medium-16 rounded-sm outline-none"
+          className="bg-primarygray ring-1 ring-slate-900/20 medium-16 rounded-sm outline-none"
         >
           <option value="women">Women</option>
           <option value="men">Men</option>
@@ -117,7 +117,7 @@ const AddProduct = () => {
           name="image"
           id="file-input"
           hidden
-          className="bg-primary max-w-80 w-full py-3 px-4 "
+          className="bg-primarygray max-w-80 w-full py-3 px-4 "
         />
       </div>
       <button className="btn_dark_rounded mt-4 flexCenter gap-x-1" onClick={()=>Add_Product()}>

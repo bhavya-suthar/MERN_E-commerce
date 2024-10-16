@@ -14,12 +14,12 @@ const ProductDisplay = (props) => {
       <div className="flex flex-col gap-14 xl:flex-row">
         {/* left side */}
         <div className="flex gap-x-2 xl:flex-1">
-          <div className="flex flex-col gap-[7px] flex-wrap">
+          {/* <div className="flex flex-col gap-[7px] flex-wrap">
             <img src={product_rt_1} alt="prdctImg" className="max-h-[99px]" />
             <img src={product_rt_2} alt="prdctImg" className="max-h-[99px]" />
             <img src={product_rt_3} alt="prdctImg" className="max-h-[99px]" />
             <img src={product_rt_4} alt="prdctImg" className="max-h-[99px]" />
-          </div>
+          </div> */}
           <div>
             <img src={product.image} alt="" />
           </div>

@@ -32,7 +32,7 @@ const ListProduct = () => {
       <div className="max-h-[77vh] overflow-auto px-4 text-center">
         <table className="w-full mx-auto">
           <thead>
-            <tr className="bg-primary bold-14 sm:regular-22 text-start py-12 ">
+            <tr className="bg-primarygray bold-14 sm:regular-22 text-start py-12 ">
               <th className="p-2">Products</th>
               <th className="p-2">Title</th>
               <th className="p-2">Old Price</th>
