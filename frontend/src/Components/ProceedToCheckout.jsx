@@ -1,408 +1,331 @@
+import axios from 'axios';
 import { Formik } from "formik";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Button, Form } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from 'react-router-dom';
 import * as yup from "yup";
+
 import { countries } from "../jsonFolder/countries";
 import { cities } from "../jsonFolder/cities";
-// import DatePicker from "react-datepicker";
-// import "react-datepicker/dist/react-datepicker.css";
+
 const ProceedToCheckout = () => {
-  const count = 50;
-  console.log("🚀  ProceedToCheckout  count:", count);
-
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConPassword, setShowConPassword] = useState(false);
-
-  const [selectedDate, setSelectedDate] = useState(new Date());
-
-  const [fromCity, setFromCity] = useState([]);
-  console.log("🚀  ProceedToCheckout  fromCity:", fromCity);
+  const [paymentMethod, setPaymentMethod] = useState("COD");
 
   const defaulValues = {
-    userName: "",
     fullname: "",
     email: "",
-    password: "",
-    confirmPass: "",
-    gender: "male",
-    country: "",
-    city: "",
-    date: null,
     address: "",
-    terms: false,
+    city: "",
+    country: "",
+    paymentMethod: "COD", // Default payment method
+    cardNumber: "",
+    cardExpiry: "",
+    cardCVV: "",
   };
 
   const validationSchema = yup.object().shape({
-    userName: yup.string().required("* userName is required"),
-    fullname: yup.string().required("* fullName is required"),
+    fullname: yup.string().required("* Full Name is required"),
     email: yup
       .string()
-      .matches(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, "Invalid email")
-      .required("* email is required"),
-    password: yup.string().required("* Password is required"),
-    confirmPass: yup
-      .string()
-      .required()
-      .oneOf([yup.ref("password")], "Password didn't match "),
-    gender: yup.string().required("* Gender is required"),
-    country: yup.string().required("* Country is required"),
-    city: yup.string().required("* City is required"),
-    date: yup.date().nullable().required("* Date is required"),
+      .email("Invalid email")
+      .required("* Email is required"),
     address: yup.string().required("* Address is required"),
-    terms: yup.boolean().oneOf([true], "* Please agree terms & conditions"),
+    city: yup.string().required("* City is required"),
+    country: yup.string().required("* Country is required"),
+    paymentMethod: yup.string().required("* Payment method is required"),
+    // Validation for card fields only if "Card Payment" is selected
+    cardNumber: yup
+      .string()
+      .when("paymentMethod", {
+        is: "Card",
+        then: yup.string().required("* Card Number is required"),
+      }),
+    cardExpiry: yup
+      .string()
+      .when("paymentMethod", {
+        is: "Card",
+        then: yup.string().required("* Card Expiry is required"),
+      }),
+    cardCVV: yup
+      .string()
+      .when("paymentMethod", {
+        is: "Card",
+        then: yup.string().required("* CVV is required"),
+      }),
   });
+  const [fromCity, setFromCity] = useState([]);
+  // console.log("🚀 ~ Registration ~ fromCity:", fromCity)
 
-  const selectCity = (e) => {
-    const fndcity = e;
-    console.log("🚀  selectCity  fndcity:", fndcity);
+  const navigate =  useNavigate()
 
-    const selectedCountry = cities.find((ele) => ele.country === e);
-    console.log("🚀  selectCity  selectedCountry:", selectedCountry);
-    setFromCity(selectedCountry ? selectedCountry.cities : []);
+  const handleCities = (e) => {
+    const selectedCountry = e.target.value;
+    const filteredCities = cities.find(
+      (element) => element.country === selectedCountry
+    );
+    setFromCity(filteredCities ? filteredCities.cities : []);
   };
+
+
+  // const handleSubmit = async (values, actions) => {
+  //   // Simulate sending the form to a server
+  //   console.log("Form Values Submitted:", values);
+  //   actions.resetForm();
+  // };
+
+
   const handleSubmit = async (values, actions) => {
-    const token = localStorage.getItem("auth-token");
-
-    if (!token) {
-      console.error("Authentication token is missing");
-      return;
-    }
-
     try {
-      const response = await fetch("http://localhost:4000/order", {
-        method: "POST",
+      console.log("Form Values Submitted:", values);
+    const token = localStorage.getItem('auth-token');
+    console.log("🚀 ~ handleSubmit ~ token:", token)
+  
+      // Call the order API using axios
+      const response = await axios.post('http://localhost:4000/order', values, {
         headers: {
-          "Content-Type": "application/json",
-          "auth-token": token,
-        },
-        body: JSON.stringify(values),
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
       });
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Order successfully created:", data);
+  
+      if (response.status === 201) {
+        console.log("Order placed successfully:", response.data);
+        alert("Order placed successfully!");
         actions.resetForm();
       } else {
-        const errorData = await response.json();
-        console.error("Order creation error:", errorData);
+        console.error("Error placing order:", response.data);
+        alert("Error placing order: " + response.data.error);
       }
     } catch (error) {
-      console.error("Network error:", error);
+      console.error("Order submission error:", error);
+      // Check if the error response exists
+      if (error.response) {
+        alert("Error: " + error.response.data.errors);
+      } else {
+        alert("An error occurred while placing the order.");
+      }
     }
   };
+  
+
 
   return (
-    <>
-      <div
-        className="container bg-light rounded-4 p-4 shadow"
-        style={{ marginTop: "70px", width: "480px" }}
+    <div className='max_padd_container p-14'>
+    <div
+      className="container bg-light rounded-4 p-4 shadow mt-10"
+      style={{ marginTop: "70px", width: "480px" }}
+    >
+      <Formik
+        initialValues={defaulValues}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}
       >
-        <h2 className="text-center">ProceedToCheckout</h2>
-        <Formik
-          initialValues={defaulValues}
-          validationSchema={validationSchema}
-          // onSubmit={(values, action) => {
-          //     console.log("🚀  ProceedToCheckout  value:", values)
-          //     action.resetForm();
-
-          // }
-
-          onSubmit={handleSubmit}
-        >
-          {({
-            values,
-            handleChange,
-            handleSubmit,
-            handleBlur,
-            errors,
-            touched,
-            setFieldValue,
-          }) => (
-            <Form onSubmit={handleSubmit}>
-              <div className="d-flex justify-content-center gap-2 pt-5">
-                <Form.Group className="mb-3 w-35 text-start">
-                  <Form.Label>
-                    Full Name <span style={{ color: "red" }}>*</span>
-                  </Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="Enter Full Name"
-                    name="fullname"
-                    value={values.fullname}
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                  />
-                  {errors.fullname && touched.fullname ? (
-                    <p style={{ color: "red" }}>{errors.fullname}</p>
-                  ) : null}
-                </Form.Group>
-
-                <Form.Group className="mb-3 w-35 text-start">
-                  <Form.Label>
-                    User Name <span style={{ color: "red" }}>*</span>
-                  </Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="Enter User Name"
-                    name="userName"
-                    value={values.userName}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                  />
-                  {errors.userName && touched.userName ? (
-                    <p style={{ color: "red" }}>{errors.userName}</p>
-                  ) : null}
-                </Form.Group>
-              </div>
-              <div className="w-90">
-                <Form.Group className="mb-3 text-start">
-                  <Form.Label>
-                    Email <span style={{ color: "red" }}>*</span>
-                  </Form.Label>
-                  <Form.Control
-                    type="email"
-                    placeholder="Enter email"
-                    name="email"
-                    value={values.email}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                  />
-                  {errors.email && touched.email ? (
-                    <p style={{ color: "red" }}>{errors.email}</p>
-                  ) : null}
-                </Form.Group>
-              </div>
-
-              <div className="d-flex justify-content-center gap-2">
-                <Form.Group className="mb-3 w-35 text-start">
-                  <Form.Label>
-                    Password <span style={{ color: "red" }}>*</span>
-                  </Form.Label>
-                  <div style={{ position: "relative" }}>
-                    <Form.Control
-                      type={showPassword ? "text" : "password"}
-                      placeholder="Password"
-                      name="password"
-                      value={values.password}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                    />
-                    <span
-                      onClick={() => setShowPassword(!showPassword)}
-                      style={{
-                        position: "absolute",
-                        top: "50%",
-                        right: "20px",
-                        cursor: "pointer",
-                        transform: "translateY(-50%)",
-                      }}
-                    >
-                      {showPassword ? (
-                        <i className="fa-solid fa-eye"></i>
-                      ) : (
-                        <i className="fa-solid fa-eye-slash"></i>
-                      )}
-                    </span>
-                  </div>
-                  {errors.password && touched.password ? (
-                    <p style={{ color: "red" }}>{errors.password}</p>
-                  ) : null}
-                </Form.Group>
-
-                <Form.Group className="mb-3 w-35 text-start">
-                  <Form.Label>
-                    Confirm Password <span style={{ color: "red" }}>*</span>
-                  </Form.Label>
-                  <div style={{ position: "relative" }}>
-                    <Form.Control
-                      type={showConPassword ? "text" : "password"}
-                      placeholder="Confirm Password"
-                      name="confirmPass"
-                      value={values.confirmPass}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                    />
-                    <span
-                      onClick={() => setShowConPassword(!showConPassword)}
-                      style={{
-                        position: "absolute",
-                        top: "50%",
-                        right: "20px",
-                        cursor: "pointer",
-                        transform: "translateY(-50%)",
-                      }}
-                    >
-                      {showConPassword ? (
-                        <i className="fa-solid fa-eye"></i>
-                      ) : (
-                        <i className="fa-solid fa-eye-slash"></i>
-                      )}
-                    </span>
-                  </div>
-                  {errors.confirmPass && touched.confirmPass ? (
-                    <p style={{ color: "red" }}>{errors.confirmPass}</p>
-                  ) : null}
-                </Form.Group>
-              </div>
-
-              <div>
-                <Form.Group className="mb-3 text-start d-flex gap-4">
-                  <Form.Label>
-                    Gender <span style={{ color: "red" }}>*</span>
-                  </Form.Label>
-                  {errors.gender && touched.gender ? (
-                    <p style={{ color: "red" }}>{errors.gender}</p>
-                  ) : null}
-                  <Form.Check
-                    type="radio"
-                    name="gender"
-                    value="male"
-                    checked
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                  />
-                  <Form.Label>Male</Form.Label>
-
-                  <Form.Check
-                    type="radio"
-                    name="gender"
-                    value="female"
-                    checked={values.gender === "female"}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                  />
-                  <Form.Label>Female</Form.Label>
-                </Form.Group>
-              </div>
-
-              <div>
-                <Form.Group className="mb-3 w-35 text-start d-flex justify-content-center gap-2">
-                  <Form.Select
-                    aria-label="Default select example"
-                    // value={values.country}
-                    name="country"
-                    onChange={(e) => {
-                      selectCity(e.target.value);
-                      handleChange(e);
-                    }}
-                    // onChange={handleChange}
-                    onBlur={handleBlur}
-                  >
-                    <option>
-                      Select Country <span style={{ color: "red" }}>*</span>
-                    </option>
-                    {countries.map((ele, index) => (
-                      <option key={index}>{ele.name}</option>
-                    ))}
-                  </Form.Select>
-                  {errors.country && touched.country ? (
-                    <p style={{ color: "red" }}>{errors.country}</p>
-                  ) : null}
-
-                  <Form.Select
-                    aria-label=""
-                    // value={values.city}
-                    name="city"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                  >
-                    <option>
-                      Select City <span style={{ color: "red" }}>*</span>
-                    </option>
-                    {fromCity.length ? (
-                      fromCity.map((city, i) => <option key={i}>{city}</option>)
-                    ) : (
-                      <option>No City found</option>
-                    )}
-                  </Form.Select>
-                  {errors.city && touched.city ? (
-                    <p style={{ color: "red" }}>{errors.city}</p>
-                  ) : null}
-                </Form.Group>
-              </div>
-
-              <div style={{ display: "flex", gap: "5px" }}>
-                <Form.Label>
-                  Date<span style={{ color: "red" }}>*</span>
-                </Form.Label>
-                {/* <DatePicker 
-                selected={values.date} 
-                onChange={(date)=> {setFieldValue("date", date); }}
-                onBlur={handleBlur}
-                // readOnly={true}
-                /> */}
-                <Form.Control
-                  type="date"
-                  name="date"
-                  value={values.date}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                ></Form.Control>
-                {errors.date && touched.date ? (
-                  <p style={{ color: "red" }}>{errors.date}</p>
-                ) : null}
-              </div>
-
-              <div className="mt-2">
-                <Form.Label>
-                  Address <span style={{ color: "red" }}>*</span>
-                </Form.Label>
-                <div style={{ position: "relative" }}>
-                  <Form.Control
-                    as="textarea"
-                    name="address"
-                    value={values.address}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    maxLength={50}
-                  ></Form.Control>
-                  <p style={{ position: "absolute", top: "-2%", right: "6px" }}>
-                    {values.address.length}/{count}
-                  </p>
-                  {/* {/ {values.address.length >= 10 ? <p>can't add</p> : ""} /} */}
-                </div>
-                {errors.address && touched.address ? (
-                  <p style={{ color: "red" }}>{errors.address}</p>
-                ) : null}
-              </div>
-
-              <div className="d-flex mt-3 gap-2">
-                <Form.Check
-                  type="checkbox"
-                  name="terms"
-                  value={values.terms}
-                  // checked={values.terms  === true}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                ></Form.Check>
-                <Form.Label>
-                  Agree terms & conditions.{" "}
-                  <span style={{ color: "red" }}>*</span>
-                </Form.Label>
-                {errors.terms && touched.terms ? (
-                  <p style={{ color: "red" }}>{errors.terms}</p>
-                ) : null}
-              </div>
-
-              <div className="d-flex justify-content-center gap-5 mt-3">
-                <Button variant="primary" type="submit">
-                  ProceedToCheckout
-                </Button>
-              </div>
-
-              <Form.Label className="pt-2" style={{ marginLeft: "25px" }}>
-                Already have an account?
-                <Link to={"/login"} style={{ textDecoration: "none" }}>
-                  {" "}
-                  SignIn
-                </Link>
+        {({
+          values,
+          handleChange,
+          handleSubmit,
+          handleBlur,
+          errors,
+          touched,
+        }) => (
+          <Form onSubmit={handleSubmit}>
+          <div className='d-flex gap-2'>
+            <Form.Group className="mb-3">
+              <Form.Label>
+                Full Name <span style={{ color: "red" }}>*</span>
               </Form.Label>
-            </Form>
-          )}
-        </Formik>
-      </div>
-    </>
+              <Form.Control
+                type="text"
+                name="fullname"
+                placeholder="Enter Full Name"
+                value={values.fullname}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+              {errors.fullname && touched.fullname ? (
+                <p style={{ color: "red" }}>{errors.fullname}</p>
+              ) : null}
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>
+                Email <span style={{ color: "red" }}>*</span>
+              </Form.Label>
+              <Form.Control
+                type="email"
+                name="email"
+                placeholder="Enter Email"
+                value={values.email}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+              {errors.email && touched.email ? (
+                <p style={{ color: "red" }}>{errors.email}</p>
+              ) : null}
+            </Form.Group>
+            </div>
+
+            <Form.Group className="mb-3">
+              <Form.Label>
+                Address <span style={{ color: "red" }}>*</span>
+              </Form.Label>
+              <Form.Control
+                type="text"
+                name="address"
+                placeholder="Enter Address"
+                value={values.address}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+              {errors.address && touched.address ? (
+                <p style={{ color: "red" }}>{errors.address}</p>
+              ) : null}
+            </Form.Group>
+
+            <div className="d-flex gap-3 mb-3">
+              <select
+                id="country"
+                name="country"
+                // value={values.country}
+                className="country w-50 border rounded-2"
+                onBlur={handleBlur}
+                onChange={(e) => {
+                  handleCities(e);
+                  handleChange(e);
+                }}
+              >
+                <option>Select Country</option>
+                {countries.map((ele) => (
+                  <option>{ele.name}</option>
+                ))}
+              </select>
+              {errors.country && touched.country ? (
+                <p className="text-danger">{errors.country}</p>
+              ) : null}
+
+              <select
+                id="city"
+                name="city"
+                className="city w-50 border rounded-1"
+                value={values.city}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              >
+                <option value="">Select City</option>
+                {fromCity.map((city) => (
+                  <option>{city}</option>
+                ))}
+              </select>
+              {errors.city && touched.city ? (
+                <p className="text-danger">{errors.city}</p>
+              ) : null}
+
+              <br />
+            </div>
+
+            <Form.Group className="mb-3">
+              <Form.Label>
+                Payment Method <span style={{ color: "red" }}>*</span>
+              </Form.Label>
+              <Form.Check
+                type="radio"
+                name="paymentMethod"
+                label="Cash on Delivery"
+                value="COD"
+                checked={values.paymentMethod === "COD"}
+                onChange={(e) => {
+                  setPaymentMethod(e.target.value);
+                  handleChange(e);
+                }}
+              />
+              <Form.Check
+                type="radio"
+                name="paymentMethod"
+                label="Card Payment"
+                value="Card"
+                checked={values.paymentMethod === "Card"}
+                onChange={(e) => {
+                  setPaymentMethod(e.target.value);
+                  handleChange(e);
+                }}
+              />
+              {errors.paymentMethod && touched.paymentMethod ? (
+                <p style={{ color: "red" }}>{errors.paymentMethod}</p>
+              ) : null}
+            </Form.Group>
+
+            {paymentMethod === "Card" && (
+              <>
+                <Form.Group className="mb-3">
+                  <Form.Label>
+                    Card Number <span style={{ color: "red" }}>*</span>
+                  </Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="cardNumber"
+                    placeholder="Enter Card Number"
+                    value={values.cardNumber}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                  />
+                  {errors.cardNumber && touched.cardNumber ? (
+                    <p style={{ color: "red" }}>{errors.cardNumber}</p>
+                  ) : null}
+                </Form.Group>
+
+                <Form.Group className="mb-3">
+                  <Form.Label>
+                    Expiry Date <span style={{ color: "red" }}>*</span>
+                  </Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="cardExpiry"
+                    placeholder="MM/YY"
+                    value={values.cardExpiry}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                  />
+                  {errors.cardExpiry && touched.cardExpiry ? (
+                    <p style={{ color: "red" }}>{errors.cardExpiry}</p>
+                  ) : null}
+                </Form.Group>
+
+                <Form.Group className="mb-3">
+                  <Form.Label>
+                    CVV <span style={{ color: "red" }}>*</span>
+                  </Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="cardCVV"
+                    placeholder="CVV"
+                    value={values.cardCVV}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                  />
+                  {errors.cardCVV && touched.cardCVV ? (
+                    <p style={{ color: "red" }}>{errors.cardCVV}</p>
+                  ) : null}
+                </Form.Group>
+              </>
+            )}
+
+            <div className='d-flex justify-between'>
+
+
+            <Button variant="primary" type="submit" className=" btn_dark_rounded w-48">
+              Confirm Payment
+            </Button>
+            
+            <Button variant="primary" onClick={()=> navigate('/')} className="btn_dark_rounded w-32">
+              Cancel
+            </Button>
+
+            </div>
+           </Form>
+        )}
+      </Formik>
+    </div>
+    </div>
   );
 };
 

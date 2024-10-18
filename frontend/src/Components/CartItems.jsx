@@ -2,8 +2,22 @@ import { useContext } from "react";
 import { ShopContext } from "../Context/ShopContext";
 import { TbTrash } from "react-icons/tb";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const CartItems = () => {
+
+
+  const notifyError = () => toast.success("Delete Product from Cart!",{
+    position: "top-right",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "dark",
+    });
+
   const { all_products, cartItems,removeFromCart,addToCart ,getTotalAmount,deleteFromCart} = useContext(ShopContext);
 
   
@@ -56,7 +70,7 @@ const CartItems = () => {
                     {/* Increase quantity button */}
                     <button
                       className="px-2 py-1 bg-black text-white rounded"
-                      onClick={() => addToCart(e.id)}
+                      onClick={() =>{ addToCart(e.id);}}
                     >
                       +
                     </button>
@@ -68,7 +82,7 @@ const CartItems = () => {
                   </td>
                   <td>
                     <div className="bold-22 pl-14">
-                      <TbTrash onClick={() => deleteFromCart(e.id)} />
+                      <TbTrash onClick={() => {deleteFromCart(e.id),notifyError()}} />
                     </div>
                   </td>
                 </tr>

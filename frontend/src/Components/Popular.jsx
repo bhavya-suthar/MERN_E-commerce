@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 // import POPULAR from "../assets/popular";
 import Item from "../Components/Item";
 // import all_products from "../assets/all_products";
@@ -13,7 +13,7 @@ const Popular = () => {
   },[]);
   return (
     <section className="bg-primarygray">
-      <div className="max_padd_container py-12 xl:py-28 xl:w-[88%]">
+      <div className="max_padd_container mt-0 xl:py-28 xl:w-[88%]">
         <h3 className="h3 text-center">Popular Product</h3>
         <hr className="h-[3px] md:w-1/2 mx-auto bg-gradient-to-l from-transparent via-black to-transparent mb-16" />
         {/* container */}

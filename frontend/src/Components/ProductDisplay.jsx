@@ -5,10 +5,22 @@ import product_rt_3 from "../assets/product_rt_3.png";
 import product_rt_4 from "../assets/product_rt_4.png";
 import { useContext } from "react";
 import { ShopContext } from "../Context/ShopContext";
+import { toast } from "react-toastify";
 
 const ProductDisplay = (props) => {
   const { product } = props;
   const { addToCart } = useContext(ShopContext);
+  const notify = () => toast.success("Product Added to Cart Successfully!",{
+    position: "top-right",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "dark",
+    });
+
   return (
     <section>
       <div className="flex flex-col gap-14 xl:flex-row">
@@ -58,6 +70,7 @@ const ProductDisplay = (props) => {
               <button
                 onClick={() => {
                   addToCart(product.id);
+                  notify()
                 }}
                 className="btn_dark_outline !rounded-none uppercase regular-14 tracking-widest"
               >

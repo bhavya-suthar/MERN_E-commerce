@@ -1,5 +1,4 @@
 import { MdOutlineLocalOffer } from "react-icons/md";
-import { FaStar } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 import { useEffect, useState } from "react";
 
@@ -46,8 +45,8 @@ const Hero = () => {
   }, [currentSlide]);
 
   return (
-    <section className="relative h-screen w-full mt-24 pb-12">
-      <div className="overflow-hidden h-full">
+    <section className="relative h-96 w-full mt-24 ">
+      <div className="overflow-hidden h-full mb-0">
         {/* Sliding Container */}
         <div
           className="flex transition-transform duration-500 ease-in-out"

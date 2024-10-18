@@ -7,11 +7,15 @@ import Login from "./Pages/Login";
 import Footer from "./Components/Footer";
 import Product from "./Pages/Product";
 import CartItems from "./Components/CartItems";
-import bannermens from "./assets/bannermens.png";
-import bannerwomens from "./assets/bannerwomens.png";
-import bannerkids from "./assets/bannerkids.png";
+// import bannermens from "./assets/bannermens.png";
+// import bannerwomens from "./assets/bannerwomens.png";
+// import bannerkids from "./assets/bannerkids.png";
+import bannermens from "./assets/mensbanner.jfif";
+import bannerwomens from "./assets/womenbenner.jfif";
+import bannerkids from "./assets/kidsbenner.jfif";
 import ProceedToCheckout from "./Components/ProceedToCheckout";
 
+import { ToastContainer } from 'react-toastify';
 export default function App() {
   // Simulate an authentication check (should be replaced with real token validation logic)
   const isAuthenticated = () => {
@@ -62,6 +66,8 @@ export default function App() {
         </Routes>
         <Footer />
       </BrowserRouter>
+      <ToastContainer />
+
     </main>
   );
 }

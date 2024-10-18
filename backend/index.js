@@ -296,53 +296,40 @@ app.post("/getcart", fetchUser, async (req, res) => {
   res.json(userData.cartData);
 });
 
-// Middleware
-app.use(cors());
-app.use(bodyParser.json());
+const calculateTotalPrice = async (cartData) => {
+  let totalPrice = 0;
 
-// MongoDB connection
-// mongoose.connect('mongodb://localhost:27017/yourdbname', {
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true,
-// });
+  // Iterate through the cart data and calculate the total
+  for (const itemId in cartData) {
+    if (cartData.hasOwnProperty(itemId)) {
+      const quantity = cartData[itemId];
+      
+      // Fetch the product details from the database using the itemId
+      const product = await Product.findOne({ id: itemId });
 
-// Define a schema
-const OrderSchema = new mongoose.Schema({
-  userName: { type: String, required: true },
-  fullname: { type: String, required: true, unique: true },
-  email: { type: String, required: true },
-  password: { type: Date, required: true },
-  confirmPass: { type: String, required: true },
-  gender: { type: String, required: true },
-  country: { type: String, required: true },
-  city: { type: String, required: true },
-  date: { type: String, required: true },
-  address: { type: String, required: true },
-  terms: { type: Boolean, required: true },
-  cartItems: { type: Object, required: true }, // Add cartItems to store the user's cart
-});
+      if (product) {
+        totalPrice += product.new_price * quantity;
+      }
+    }
+  }
 
-// Create a model
-const Order = mongoose.model("order", OrderSchema);
-// In app.js or server.js
-app.use(express.json()); // Ensure body parsing middleware is applied
-
+  return totalPrice;
+};
 app.post("/order", fetchUser, async (req, res) => {
   try {
-    console.log("Order API called"); // Ensure this is logged
-    console.log("Request body:", req.body);
+    console.log('Received order request:', req.body); // Log the request body
 
     const {
       userName,
       fullname,
       email,
-      password,
-      confirmPass,
-      date,
-      gender,
       country,
       city,
       address,
+      paymentMethod,
+      cardNumber,
+      cardExpiry,
+      cardCVV,
       terms,
     } = req.body;
 
@@ -351,46 +338,58 @@ app.post("/order", fetchUser, async (req, res) => {
       !userName ||
       !fullname ||
       !email ||
-      !password ||
-      !confirmPass ||
-      !date ||
-      !gender ||
       !country ||
       !city ||
       !address ||
-      terms === null ||
+      !paymentMethod ||
       terms === undefined
     ) {
-      console.log("Validation failed: Missing fields");
       return res.status(400).json({ error: "All fields are required!" });
     }
 
-    // Fetch user and process the order
+    // Fetch user and cart data
     const user = await User.findById(req.user.id);
     if (!user || !user.cartData) {
       return res.status(404).json({ error: "User or cart not found" });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // Calculate the total price of the items in the cart
+    const totalPrice = await calculateTotalPrice(user.cartData); // Make sure to await the calculation
 
-    const newOrder = new Order({
+    // Create order object
+    const orderData = {
+      userId: user._id,
       userName,
       fullname,
       email,
-      password: hashedPassword,
-      confirmPass: hashedPassword,
-      date,
-      gender,
       country,
       city,
       address,
-      terms,
       cartItems: user.cartData,
-    });
-    console.log("🚀 ~ app.post ~ user.cartData:", user.cartData);
+      totalPrice,
+      paymentMethod,
+      terms,
+      paymentStatus: paymentMethod === "Card" ? "Pending" : "Completed",
+    };
 
+    // For card payment, store the card details
+    if (paymentMethod === "Card") {
+      if (!cardNumber || !cardExpiry || !cardCVV) {
+        return res.status(400).json({ error: "Card details are required for card payment" });
+      }
+
+      orderData.cardDetails = {
+        cardNumber,
+        cardExpiry,
+        cardCVV,
+      };
+    }
+
+    // Save the order to the database
+    const newOrder = new Order(orderData);
     await newOrder.save();
-    res.status(201).json({ message: "Order placed successfully!" });
+
+    res.status(201).json({ message: "Order placed successfully!", orderId: newOrder._id });
   } catch (error) {
     console.error("Error while saving order:", error);
     res.status(500).json({ error: "Error saving order data" });

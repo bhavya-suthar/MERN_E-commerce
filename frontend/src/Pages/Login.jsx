@@ -1,6 +1,55 @@
 import { useState } from "react";
+import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const Login = () => {
+
+  const notify = () => toast.success("Login SuccessFul!",{
+    position: "top-right",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "dark",
+    });
+
+  const notifyError = () => toast.error("Please Enter valid Credential!",{
+    position: "top-right",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "dark",
+    });
+
+    const notifySignUp = () => toast.success("Registration SuccessFul!",{
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+      });
+  
+    const notifyErrorSignUp = () => toast.error("Please Enter valid Credential!",{
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+      });
+  
+
   const [state, setState] = useState("Login");
   const [formData,setFormData] = useState({
     username:"",
@@ -28,8 +77,10 @@ const Login = () => {
     if(responseData.success){
       localStorage.setItem('auth-token',responseData.token);
       window.location.replace('/')
+      notify()
     }else{
-      alert(responseData.errors)
+      // alert(responseData.errors)
+      notifyError()
     }
   }
 
@@ -48,8 +99,10 @@ const Login = () => {
     if(responseData.success){
       localStorage.setItem('auth-token',responseData.token);
       window.location.replace('/')
+      notifySignUp()
     }else{
-      alert(responseData.errors)
+      // alert(responseData.errors)
+      notifyErrorSignUp()
     }
   }
 
@@ -90,6 +143,7 @@ const Login = () => {
         <button
           onClick={() => {
             state == "Login" ? login() : signup();
+
           }}
           className="btn_dark_rounded my-5 w-full !rounded-md"
         >
