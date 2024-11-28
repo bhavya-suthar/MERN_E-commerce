@@ -10,12 +10,18 @@ import CartItems from "./Components/CartItems";
 // import bannermens from "./assets/bannermens.png";
 // import bannerwomens from "./assets/bannerwomens.png";
 // import bannerkids from "./assets/bannerkids.png";
-import bannermens from "./assets/mensbanner.jfif";
-import bannerwomens from "./assets/womenbenner.jfif";
+// import bannermens from "./assets/mensbanner.jfif";
+import bannermens from "./assets/mensbanner3.png";
+// import bannerwomens from "./assets/womenbenner.jfif";
+import bannerwomens from "./assets/womensbanner3.png";
+// import bannerwomens from "./assets/womenbanner2.jfif";
+// import bannerkids from "./assets/kidsbanner2.png";
 import bannerkids from "./assets/kidsbenner.jfif";
 import ProceedToCheckout from "./Components/ProceedToCheckout";
 
 import { ToastContainer } from 'react-toastify';
+import About from "./Pages/About";
+import Contact from "./Pages/Contact";
 export default function App() {
   // Simulate an authentication check (should be replaced with real token validation logic)
   const isAuthenticated = () => {
@@ -55,6 +61,8 @@ export default function App() {
           <Route path="/mens" element={<Category category="men" banner={bannermens} />} />
           <Route path="/womens" element={<Category category="women" banner={bannerwomens} />} />
           <Route path="/kids" element={<Category category="kid" banner={bannerkids} />} />
+          <Route path="/about" element={<About/>} />
+          <Route path="/contact" element={<Contact/>} />
 
           {/* Private Routes */}
           <Route element={<PrivateRoute />}>

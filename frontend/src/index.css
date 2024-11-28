@@ -231,3 +231,52 @@
   }
 
 }
+
+.bg-image {
+
+  background-image: url("https://demo.templatesjungle.com/kaira/images/banner-large-4.jpg"); /* Replace with your image URL */
+
+  background-size: cover;
+
+  background-position: center;
+
+  height: 300px; /* Adjust as needed */
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+
+}
+.bg-image2 {
+
+  background-image: url("F:\MERN_E-commerce\frontend\src\assets\contact1.jpg"); /* Replace with your image URL */
+
+  background-size: cover;
+
+  background-position: center;
+
+  height: 300px; /* Adjust as needed */
+
+  display: flex;
+  /* justify-content: center; */
+  align-items: center;
+
+
+}
+
+
+
+.overlay-text {
+
+  position: relative;
+
+  z-index: 1;
+
+  color: white; /* Adjust text color for contrast */
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}

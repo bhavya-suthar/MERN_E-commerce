@@ -15,7 +15,7 @@ const Category = ({ category, banner }) => {
         <div>
           <img src={banner} alt="" className="block my-7 mx-auto w-[800px]" />
         </div>
-        <div className="flexBetween my-8 mx-2">
+        {/* <div className="flexBetween my-8 mx-2">
           <h5>
             <span className="font-bold">Showing 1-12</span>out of 36 products
           </h5>
@@ -36,7 +36,7 @@ const Category = ({ category, banner }) => {
               </option>
             </select>
           </div>
-        </div>
+        </div> */}
         {/* container */}
         <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
           {all_products.map((item) => {
@@ -57,9 +57,9 @@ const Category = ({ category, banner }) => {
             }
           })}
         </div>
-        <div className="mt-16 text-center">
+        {/* <div className="mt-16 text-center">
           <button className="btn_dark_rounded">Load More</button>
-        </div>
+        </div> */}
       </div>
     </section>
   );

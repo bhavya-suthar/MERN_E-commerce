@@ -6,8 +6,10 @@ import product_rt_4 from "../assets/product_rt_4.png";
 import { useContext } from "react";
 import { ShopContext } from "../Context/ShopContext";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const ProductDisplay = (props) => {
+  const navigate = useNavigate()
   const { product } = props;
   const { addToCart } = useContext(ShopContext);
   const notify = () => toast.success("Product Added to Cart Successfully!",{
@@ -76,7 +78,7 @@ const ProductDisplay = (props) => {
               >
                 Add to Cart
               </button>
-              <button className="btn_dark_rounded !rounded-none uppercase regular-14 tracking-widest">
+              <button className="btn_dark_rounded !rounded-none uppercase regular-14 tracking-widest" onClick={()=>navigate("/paymentform")}>
                 Buy it Now
               </button>
             </div>

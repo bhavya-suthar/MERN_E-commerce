@@ -128,11 +128,11 @@ const Login = () => {
             name="email"
             value={formData.email}
             onChange={changeHandler}
-            placeholder="Email Address"
+            placeholder="Email"
             className="h-14 w-full pl-5 bg-slate-900/5 outline-none rounded-xl"
           />
           <input
-            type="text"
+            type="password"
             name="password"
             value={formData.password}
             onChange={changeHandler}

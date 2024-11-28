@@ -39,7 +39,7 @@ const Hero = () => {
   useEffect(() => {
     const slideInterval = setInterval(() => {
       nextSlide();
-    }, 3000); // Slide every 3 seconds
+    }, 2000); // Slide every 2 seconds
 
     return () => clearInterval(slideInterval); // Cleanup interval on unmount
   }, [currentSlide]);
