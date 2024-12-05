@@ -9,8 +9,9 @@ const Admin = () => {
     <div className="lg:flex">
       <Sidebar />
       <Routes>
-        <Route path="/addproduct" element={<AddProduct/>}/>
-        <Route path="/listproduct" element={<ListProduct/>}/>
+        <Route path="/addproduct" element={<AddProduct />} />
+        <Route path="/listproduct" element={<ListProduct />} />
+        <Route path="/" element={<ListProduct />} />
       </Routes>
     </div>
   );

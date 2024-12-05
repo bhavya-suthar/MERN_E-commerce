@@ -13,7 +13,7 @@ const Category = ({ category, banner }) => {
     <section className="max_padd_container py-12 xl:py-28">
       <div>
         <div>
-          <img src={banner} alt="" className="block my-7 mx-auto w-[800px]" />
+          <img src={banner} alt="" className="block mb-7 mx-auto w-[800px]" />
         </div>
         {/* <div className="flexBetween my-8 mx-2">
           <h5>

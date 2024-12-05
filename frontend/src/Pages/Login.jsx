@@ -64,6 +64,15 @@ const Login = () => {
 
   const login = async ()=>{
     console.log(" inside login function",formData)
+    // Check if the credentials match the admin panel credentials
+  if (formData.email === "admin123@gmail.com" && formData.password === "admin123") {
+    localStorage.setItem("email", formData.email);
+    localStorage.setItem("password", formData.password);
+  
+    notify(); // Notify login success
+    window.location.href = "http://localhost:5173/" // Redirect to admin panel
+    return; // Exit function
+  }
     let responseData;
     await fetch('http://localhost:4000/login',{
       method:"POST",

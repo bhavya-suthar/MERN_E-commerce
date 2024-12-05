@@ -11,17 +11,21 @@ import CartItems from "./Components/CartItems";
 // import bannerwomens from "./assets/bannerwomens.png";
 // import bannerkids from "./assets/bannerkids.png";
 // import bannermens from "./assets/mensbanner.jfif";
-import bannermens from "./assets/mensbanner3.png";
+import bannermens from "./assets/mens_banner1.png";
 // import bannerwomens from "./assets/womenbenner.jfif";
-import bannerwomens from "./assets/womensbanner3.png";
+import bannerwomens from "./assets/womens_banner.png";
 // import bannerwomens from "./assets/womenbanner2.jfif";
 // import bannerkids from "./assets/kidsbanner2.png";
-import bannerkids from "./assets/kidsbenner.jfif";
+// import bannerkids from "./assets/kidsbenner.jfif";
+import bannerkids from "./assets/kids_banner2.png";
 import ProceedToCheckout from "./Components/ProceedToCheckout";
 
 import { ToastContainer } from 'react-toastify';
 import About from "./Pages/About";
 import Contact from "./Pages/Contact";
+
+
+
 export default function App() {
   // Simulate an authentication check (should be replaced with real token validation logic)
   const isAuthenticated = () => {
@@ -56,6 +60,7 @@ export default function App() {
         <Header />
         <Routes>
           {/* Public Routes */}
+
           <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
           <Route path="/" element={<Home />} />
           <Route path="/mens" element={<Category category="men" banner={bannermens} />} />
