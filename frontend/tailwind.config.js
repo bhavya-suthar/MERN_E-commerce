@@ -29,7 +29,7 @@ export default {
         hero: "url('/src/assets/hero1.jpeg')",
         hero2:"url('src/assets/hero4.jpeg')",
         hero3:"url('src/assets/hero5.jpeg')",
-        bgBanner:"url('src/assets/banneroffer.png')"
+        bgBanner:"url('src/assets/bannerOffer.jpg')"
       },
       screens: {
         xs: '400px',
