@@ -1,3 +1,4 @@
+
 import { createContext, useEffect, useState } from "react";
 
 export const ShopContext = createContext(null);
@@ -21,23 +22,51 @@ const ShopContextProvider = (props) => {
       .then((data) => setAll_products(data));
 
     // Fetch cart data if user is authenticated
-    if (localStorage.getItem("auth-token")) {
-      fetch("http://localhost:4000/getcart", {
-        method: "POST",
-        headers: {
-          Accept: "application/form-data",
-          "auth-token": `${localStorage.getItem("auth-token")}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({}), // Send empty object for POST request
-      })
-        .then((response) => response.json()) // Properly resolve JSON
-        .then((data) => {
-          if (data && typeof data === 'object') {
-            setCartItems(data); // Set cart items only if data exists
-          }
-        });
-    }
+    // if (localStorage.getItem("auth-token")) {
+    //   fetch("http://localhost:4000/getcart", {
+    //     method: "POST",
+    //     headers: {
+    //       Accept: "application/form-data",
+    //       "auth-token": `${localStorage.getItem("auth-token")}`,
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify({}), // Send empty object for POST request
+    //   })
+    //     .then((response) => response.json()) // Properly resolve JSON
+    //     .then((data) => {
+    //       if (data && typeof data === 'object') {
+    //         setCartItems(data); // Set cart items only if data exists
+    //       }
+    //     });
+    // }
+
+    const token = localStorage.getItem("auth-token");
+if (token) {
+  fetch("http://localhost:4000/getcart", {
+    method: "POST",
+    headers: {
+      Accept: "application/form-data",
+      "auth-token": token,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({}),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Authentication failed");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      if (data && typeof data === "object") {
+        setCartItems(data);
+      }
+    })
+    .catch((err) => console.error("Error fetching cart:", err));
+} else {
+  console.error("No auth token found");
+}
+
   }, []);
 
   const addToCart = (itemId) => {
