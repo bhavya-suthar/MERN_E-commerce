@@ -43,6 +43,7 @@ let all_products = [
     image: p1_img,
     new_price: 50.0,
     old_price: 80.5,
+    stock:10
   },
   {
     id: 2,
@@ -51,6 +52,7 @@ let all_products = [
     image: p2_img,
     new_price: 85.0,
     old_price: 120.5,
+    stock:10
   },
   {
     id: 3,
@@ -59,6 +61,7 @@ let all_products = [
     image: p3_img,
     new_price: 60.0,
     old_price: 100.5,
+    stock:10
   },
   {
     id: 4,
@@ -67,6 +70,8 @@ let all_products = [
     image: p4_img,
     new_price: 100.0,
     old_price: 150.0,
+    stock:10
+
   },
   {
     id: 5,
@@ -75,6 +80,8 @@ let all_products = [
     image: p5_img,
     new_price: 85.0,
     old_price: 120.5,
+    stock:10
+
   },
   {
     id: 6,
@@ -83,6 +90,8 @@ let all_products = [
     image: p6_img,
     new_price: 85.0,
     old_price: 120.5,
+    stock:10
+
   },
   {
     id: 7,
@@ -91,6 +100,8 @@ let all_products = [
     image: p7_img,
     new_price: 85.0,
     old_price: 120.5,
+    stock:10
+
   },
   {
     id: 8,
@@ -99,6 +110,8 @@ let all_products = [
     image: p8_img,
     new_price: 85.0,
     old_price: 120.5,
+    stock:10
+
   },
   {
     id: 9,
