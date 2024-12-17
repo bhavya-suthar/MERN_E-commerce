@@ -98,6 +98,16 @@ const Product = mongoose.model("Product", {
 //creating API for add product
 
 app.post("/addproduct", async (req, res) => {
+    // Check the total number of products
+    const productCount = await Product.countDocuments();
+
+    // If the product count is 10 or more, return an error response
+    if (productCount >= 10) {
+      return res.status(400).json({
+        success: false,
+        message: "Product limit reached. Cannot add more than 10 products.",
+      });
+    }
   let products = await Product.find({});
   let id;
   if (products.length > 0) {
@@ -270,6 +280,9 @@ const fetchUser = async (req, res, next) => {
 };
 
 
+
+
+
 //creating endpoint for adding products in cartData
 app.post("/addtocart", fetchUser, async (req, res) => {
   let userData = await User.findOne({ _id: req.user.id });
@@ -319,103 +332,148 @@ app.post("/getcart", fetchUser, async (req, res) => {
   res.json(userData.cartData);
 });
 
-const calculateTotalPrice = async (cartData) => {
-  let totalPrice = 0;
+// const calculateTotalPrice = async (cartData) => {
+//   let totalPrice = 0;
 
-  // Iterate through the cart data and calculate the total
-  for (const itemId in cartData) {
-    if (cartData.hasOwnProperty(itemId)) {
-      const quantity = cartData[itemId];
+//   // Iterate through the cart data and calculate the total
+//   for (const itemId in cartData) {
+//     if (cartData.hasOwnProperty(itemId)) {
+//       const quantity = cartData[itemId];
       
-      // Fetch the product details from the database using the itemId
-      const product = await Product.findOne({ id: itemId });
+//       // Fetch the product details from the database using the itemId
+//       const product = await Product.findOne({ id: itemId });
 
-      if (product) {
-        totalPrice += product.new_price * quantity;
-      }
-    }
-  }
+//       if (product) {
+//         totalPrice += product.new_price * quantity;
+//       }
+//     }
+//   }
 
-  return totalPrice;
-};
-app.post("/order", fetchUser, async (req, res) => {
+//   return totalPrice;
+// };
+// app.post("/order", fetchUser, async (req, res) => {
+//   try {
+//     console.log('Received order request:', req.body); // Log the request body
+
+//     const {
+//       userName,
+//       fullname,
+//       email,
+//       country,
+//       city,
+//       address,
+//       paymentMethod,
+//       cardNumber,
+//       cardExpiry,
+//       cardCVV,
+//       terms,
+//     } = req.body;
+
+//     // Validate required fields
+//     if (
+//       !userName ||
+//       !fullname ||
+//       !email ||
+//       !country ||
+//       !city ||
+//       !address ||
+//       !paymentMethod ||
+//       terms === undefined
+//     ) {
+//       return res.status(400).json({ error: "All fields are required!" });
+//     }
+
+//     // Fetch user and cart data
+//     const user = await User.findById(req.user.id);
+//     if (!user || !user.cartData) {
+//       return res.status(404).json({ error: "User or cart not found" });
+//     }
+
+//     // Calculate the total price of the items in the cart
+//     const totalPrice = await calculateTotalPrice(user.cartData); // Make sure to await the calculation
+
+//     // Create order object
+//     const orderData = {
+//       userId: user._id,
+//       userName,
+//       fullname,
+//       email,
+//       country,
+//       city,
+//       address,
+//       cartItems: user.cartData,
+//       totalPrice,
+//       paymentMethod,
+//       terms,
+//       paymentStatus: paymentMethod === "Card" ? "Pending" : "Completed",
+//     };
+
+//     // For card payment, store the card details
+//     if (paymentMethod === "Card") {
+//       if (!cardNumber || !cardExpiry || !cardCVV) {
+//         return res.status(400).json({ error: "Card details are required for card payment" });
+//       }
+
+//       orderData.cardDetails = {
+//         cardNumber,
+//         cardExpiry,
+//         cardCVV,
+//       };
+//     }
+
+//     // Save the order to the database
+//     const newOrder = new Order(orderData);
+//     await newOrder.save();
+
+//     res.status(201).json({ message: "Order placed successfully!", orderId: newOrder._id });
+//   } catch (error) {
+//     console.error("Error while saving order:", error);
+//     res.status(500).json({ error: "Error saving order data" });
+//   }
+// });
+
+
+app.post("/checkout", fetchUser, async (req, res) => {
   try {
-    console.log('Received order request:', req.body); // Log the request body
+    const { cartItems, paymentMethod } = req.body; // Extract data from payload
 
-    const {
-      userName,
-      fullname,
-      email,
-      country,
-      city,
-      address,
-      paymentMethod,
-      cardNumber,
-      cardExpiry,
-      cardCVV,
-      terms,
-    } = req.body;
-
-    // Validate required fields
-    if (
-      !userName ||
-      !fullname ||
-      !email ||
-      !country ||
-      !city ||
-      !address ||
-      !paymentMethod ||
-      terms === undefined
-    ) {
-      return res.status(400).json({ error: "All fields are required!" });
+    // Validate the payload
+    if (!cartItems || Object.keys(cartItems).length === 0) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Cart items are required" });
     }
 
-    // Fetch user and cart data
-    const user = await User.findById(req.user.id);
-    if (!user || !user.cartData) {
-      return res.status(404).json({ error: "User or cart not found" });
+    if (!paymentMethod) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Payment method is required" });
     }
 
-    // Calculate the total price of the items in the cart
-    const totalPrice = await calculateTotalPrice(user.cartData); // Make sure to await the calculation
-
-    // Create order object
-    const orderData = {
-      userId: user._id,
-      userName,
-      fullname,
-      email,
-      country,
-      city,
-      address,
-      cartItems: user.cartData,
-      totalPrice,
-      paymentMethod,
-      terms,
-      paymentStatus: paymentMethod === "Card" ? "Pending" : "Completed",
-    };
-
-    // For card payment, store the card details
-    if (paymentMethod === "Card") {
-      if (!cardNumber || !cardExpiry || !cardCVV) {
-        return res.status(400).json({ error: "Card details are required for card payment" });
-      }
-
-      orderData.cardDetails = {
-        cardNumber,
-        cardExpiry,
-        cardCVV,
-      };
+    // Fetch user details
+    const user = await User.findOne({ _id: req.user.id });
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
 
-    // Save the order to the database
-    const newOrder = new Order(orderData);
-    await newOrder.save();
+    // Process the checkout
+    console.log("Processing checkout for user:", user.name);
+    console.log("Cart Items:", cartItems);
+    console.log("Payment Method:", paymentMethod);
 
-    res.status(201).json({ message: "Order placed successfully!", orderId: newOrder._id });
+    // Clear the user's cart after checkout
+    user.cartData = {}; // Clear the cart data
+    for (let i = 0; i < 300; i++) {
+      user.cartData[i] = 0; // Reset the cart items
+    }
+    await User.findOneAndUpdate({ _id: req.user.id }, { cartData: user.cartData });
+
+    res.json({ success: true, message: "Checkout successful. Cart cleared." });
   } catch (error) {
-    console.error("Error while saving order:", error);
-    res.status(500).json({ error: "Error saving order data" });
+    console.error("Error during checkout:", error);
+    res.status(500).json({ success: false, message: "Error during checkout" });
   }
 });
 

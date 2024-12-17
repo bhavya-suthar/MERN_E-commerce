@@ -1,5 +1,5 @@
-
 import { createContext, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 export const ShopContext = createContext(null);
 
@@ -21,55 +21,52 @@ const ShopContextProvider = (props) => {
       .then((response) => response.json())
       .then((data) => setAll_products(data));
 
-    // Fetch cart data if user is authenticated
-    // if (localStorage.getItem("auth-token")) {
-    //   fetch("http://localhost:4000/getcart", {
-    //     method: "POST",
-    //     headers: {
-    //       Accept: "application/form-data",
-    //       "auth-token": `${localStorage.getItem("auth-token")}`,
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify({}), // Send empty object for POST request
-    //   })
-    //     .then((response) => response.json()) // Properly resolve JSON
-    //     .then((data) => {
-    //       if (data && typeof data === 'object') {
-    //         setCartItems(data); // Set cart items only if data exists
-    //       }
-    //     });
-    // }
-
     const token = localStorage.getItem("auth-token");
-if (token) {
-  fetch("http://localhost:4000/getcart", {
-    method: "POST",
-    headers: {
-      Accept: "application/form-data",
-      "auth-token": token,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({}),
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Authentication failed");
-      }
-      return response.json();
-    })
-    .then((data) => {
-      if (data && typeof data === "object") {
-        setCartItems(data);
-      }
-    })
-    .catch((err) => console.error("Error fetching cart:", err));
-} else {
-  console.error("No auth token found");
-}
-
+    if (token) {
+      fetch("http://localhost:4000/getcart", {
+        method: "POST",
+        headers: {
+          Accept: "application/form-data",
+          "auth-token": token,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({}),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Authentication failed");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          if (data && typeof data === "object") {
+            setCartItems(data);
+          }
+        })
+        .catch((err) => console.error("Error fetching cart:", err));
+    } else {
+      console.error("No auth token found");
+    }
   }, []);
 
+  const notify = () =>
+    toast.error("You cannot add more than 10 of the same item to the cart.", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+    });
+
   const addToCart = (itemId) => {
+    if (cartItems[itemId] >= 10) {
+      notify();
+      return;
+    }
+
     setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] + 1 }));
     if (localStorage.getItem("auth-token")) {
       fetch("http://localhost:4000/addtocart", {
@@ -113,7 +110,7 @@ if (token) {
       updatedCart[itemId] = 0; // Set the item's quantity to 0 or remove it completely
       return updatedCart;
     });
-  
+
     if (localStorage.getItem("auth-token")) {
       fetch("http://localhost:4000/deletecartitem", {
         method: "POST",
@@ -128,7 +125,6 @@ if (token) {
         .then((data) => console.log(data));
     }
   };
-  
 
   const getTotalAmount = () => {
     let totalAmount = 0;
@@ -143,7 +139,7 @@ if (token) {
       }
     }
     return totalAmount;
-  }; 
+  };
 
   const getTotalCartItems = () => {
     let totalItem = 0;
@@ -156,6 +152,47 @@ if (token) {
     return totalItem;
   };
 
+  const proceedToCheckout = () => {
+    if (localStorage.getItem("auth-token")) {
+      fetch("http://localhost:4000/checkout", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "auth-token": `${localStorage.getItem("auth-token")}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          cartItems: cartItems, // Example: { "1": 2, "3": 1 }
+          paymentMethod: "Card", // Example: Card payment
+        }),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Checkout failed");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          if (data.success) {
+            // Clear the cart on success
+            setCartItems(getDefaultCart());
+            toast.success("Checkout successful! Your cart is now empty.", {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              theme: "dark",
+            });
+          }
+        })
+        .catch((err) => console.error("Error during checkout:", err));
+    } else {
+      console.error("No auth token found");
+    }
+  };
+
   const contextValue = {
     all_products,
     cartItems,
@@ -164,6 +201,7 @@ if (token) {
     deleteFromCart,
     getTotalAmount,
     getTotalCartItems,
+    proceedToCheckout,
   };
 
   return (

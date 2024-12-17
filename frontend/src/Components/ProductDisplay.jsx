@@ -96,12 +96,12 @@ const ProductDisplay = (props) => {
             <div className="flex flex-col gap-y-3 mb-4 max-w-[555px]">
               <button
                onClick={() => {
-                  if (!selectSize) {
-                    toast.error("Please select a size before adding to cart!", {
-                      theme: "dark",
-                    });
-                    return;
-                  }
+                  // if (!selectSize) {
+                  //   toast.error("Please select a size before adding to cart!", {
+                  //     theme: "dark",
+                  //   });
+                  //   return;
+                  // }
                   addToCart(product.id, selectSize); // Pass selected size
                   notify();
                 }}
